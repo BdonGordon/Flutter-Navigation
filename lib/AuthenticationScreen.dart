@@ -21,7 +21,7 @@ class AuthenticationScreenState extends State<AuthenticationScreen> {
           RaisedButton(
             child: Text("LOGIN"),
             onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/Core');
+              Navigator.of(context).pushNamedAndRemoveUntil("/Core", (Route<dynamic> route) => false);
             },
           )
         ],

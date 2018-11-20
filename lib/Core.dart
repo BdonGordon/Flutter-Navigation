@@ -16,20 +16,11 @@ class CoreState extends State<Core> {
   GlobalKey<NavigatorState> _mainNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _coreNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<ScaffoldState> _coreScaffold = new GlobalKey();
-  GlobalKey<DrawerControllerState> _drawerKey = new GlobalKey<DrawerControllerState>();
-
 
   @override
   didUpdateWidget(Widget oldWidget) {
     super.didUpdateWidget(oldWidget);
     print("Updated?");
-  }
-
-  _handleDrawerItemChange(String selectedItem) {
-    if(selectedItem.compareTo("settings") == 0) {
-      this._mainNavigatorKey.currentState.pushNamed("Core/coreNavigation/drawerNavigation/settings");
-      Navigator.of(context).pop();
-    }
   }
 
   _handleTabChange(BuildContext context, int index) {
@@ -52,25 +43,6 @@ class CoreState extends State<Core> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: this._coreScaffold,
-      appBar: AppBar(
-        title: Text("Core"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.ac_unit),
-            onPressed: (){
-              this._coreNavigatorKey.currentState.pushNamed("core/cart");
-            },
-          )
-//          Shopping(coreNavKey: this._mainNavigatorKey,)
-        ],
-      ),
-
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: this._tab,
         onTap: (index) => _handleTabChange(context, index),
@@ -90,8 +62,58 @@ class CoreState extends State<Core> {
         ]
       ),
       body: Center(
-        child: _buildCoreNavigator(),
+        child: _buildCoreNavigator()
       ),
+    );
+  }
+
+//  Scaffold _buildHomeScaffold() {
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: Text("Home And Such"),
+//      ),
+//      body: _buildMain(),
+//    );
+//  }
+  
+  
+  
+  
+  
+  
+
+  //_buildMain(),
+
+
+  Scaffold _buildHome() {
+    return Scaffold(
+      appBar: AppBar(
+      title: Text("Core"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.ac_unit),
+              onPressed: (){
+              this._coreNavigatorKey.currentState.pushNamed("core/cart");
+            },
+          )
+      ],
+    ),
+    body: _buildHomeNavigator(),
+    );
+  }
+
+  Scaffold _buildShoppingScreen() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("SHOPING"),
+      ),
+      body: Settings(),
     );
   }
 
@@ -102,9 +124,10 @@ class CoreState extends State<Core> {
       onGenerateRoute: (RouteSettings settings){
         WidgetBuilder builder;
 
+        print("CORE_NAV: ${settings.name}");
         switch(settings.name) {
           case "core/home": {
-            builder = (context) => _buildMainNavigator();
+            builder = (context) => _buildHomeNavigator();
 
             break;
           }
@@ -125,59 +148,49 @@ class CoreState extends State<Core> {
     );
   }
 
-  Navigator _buildMainNavigator() {
-    return Navigator(
-      key: _mainNavigatorKey,
-      initialRoute: "bottomNavigation/home",
-      onGenerateRoute: (RouteSettings settings){
-        WidgetBuilder builder;
 
-        print("CORE_NAV: ${settings.name}");
+  Scaffold _buildHomeNavigator() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Home"),
+      ),
+      body: Navigator(
+        key: _mainNavigatorKey,
+        initialRoute: "bottomNavigation/home",
+        onGenerateRoute: (RouteSettings settings){
+          WidgetBuilder builder;
 
-        switch(settings.name) {
-          case "bottomNavigation/home": {
-            builder = (context) => Home();
-            break;
+          print("HOME_NAV: ${settings.name}");
+
+          switch(settings.name) {
+            case "bottomNavigation/home": {
+              builder = (context) => Home();
+              break;
+            }
+
+            case "bottomNavigation/profile": {
+              builder = (context) => Profile();
+              break;
+            }
+
+            case "appBar/shoppingScreen": {
+              builder = (context) => ShoppingScreen();
+              break;
+            }
+
+            case "drawerNavigation/settings": {
+              builder = (context) => Settings();
+              break;
+            }
+
+            default: {
+              throw Exception("Error in route: ${settings.name}");
+            }
           }
 
-          case "bottomNavigation/profile": {
-            builder = (context) => Profile();
-            break;
-          }
-
-          case "appBar/shoppingScreen": {
-            builder = (context) => ShoppingScreen();
-            break;
-          }
-
-          case "drawerNavigation/settings": {
-            builder = (context) => Settings();
-            break;
-          }
-
-          default: {
-            throw Exception("Error in route: ${settings.name}");
-          }
-        }
-
-        return MaterialPageRoute(builder: builder, settings: settings);
-      },
+          return MaterialPageRoute(builder: builder, settings: settings);
+        },
+      )
     );
   }
 }
-
-///       drawer: Drawer(
-//        key: this._drawerKey,
-//        child: ListView(
-//          children: <Widget>[
-//            MaterialButton(
-//              onPressed: (){_handleDrawerItemChange("settings");},
-//              child: Text("SETTINGS"),
-//            ),
-//            MaterialButton(
-//              onPressed: (){_handleDrawerItemChange("logout");},
-//              child: Text("LOGOUT"),
-//            ),
-//          ],
-//        ),
-//      ),
