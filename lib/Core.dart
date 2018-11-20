@@ -46,24 +46,6 @@ class CoreState extends State<Core> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: this._coreScaffold,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: this._tab,
-        onTap: (index) => _handleTabChange(context, index),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home")
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile")
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu),
-            title: Text("More")
-          )
-        ]
-      ),
       body: Center(
         child: _buildCoreNavigator()
       ),
@@ -115,6 +97,24 @@ class CoreState extends State<Core> {
             )
           ],
         ),
+        bottomNavigationBar: BottomNavigationBar(
+            currentIndex: this._tab,
+            onTap: (index) => _handleTabChange(context, index),
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  title: Text("Home")
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  title: Text("Profile")
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.menu),
+                  title: Text("More")
+              )
+            ]
+        ),
         body: Navigator(
           key: _homeNavigatorKey,
           initialRoute: "bottomNavigation/home",
@@ -131,16 +131,6 @@ class CoreState extends State<Core> {
 
               case "bottomNavigation/profile": {
                 builder = (context) => Profile();
-                break;
-              }
-
-              case "appBar/shoppingScreen": {
-                builder = (context) => ShoppingScreen();
-                break;
-              }
-
-              case "drawerNavigation/settings": {
-                builder = (context) => Settings();
                 break;
               }
 
@@ -163,8 +153,5 @@ class CoreState extends State<Core> {
       body: Settings(),
     );
   }
-
-
-
 
 }
