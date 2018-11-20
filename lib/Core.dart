@@ -13,7 +13,7 @@ class Core extends StatefulWidget {
 
 class CoreState extends State<Core> {
   int _tab = 0;
-  GlobalKey<NavigatorState> _mainNavigatorKey = new GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState> _homeNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _coreNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<ScaffoldState> _coreScaffold = new GlobalKey();
 
@@ -29,16 +29,18 @@ class CoreState extends State<Core> {
     });
 
     if(index == 0) {
-      this._mainNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/home");
+      this._homeNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/home");
     }
     else if(index == 1) {
-      this._mainNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/profile");
+      this._homeNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/profile");
     }
     else if(index == 2) {
       this._coreScaffold.currentState.openDrawer();
     }
   }
 
+
+  /// MAIN CLASS BUILD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,56 +69,6 @@ class CoreState extends State<Core> {
     );
   }
 
-//  Scaffold _buildHomeScaffold() {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text("Home And Such"),
-//      ),
-//      body: _buildMain(),
-//    );
-//  }
-  
-  
-  
-  
-  
-  
-
-  //_buildMain(),
-
-
-  Scaffold _buildHome() {
-    return Scaffold(
-      appBar: AppBar(
-      title: Text("Core"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.ac_unit),
-              onPressed: (){
-              this._coreNavigatorKey.currentState.pushNamed("core/cart");
-            },
-          )
-      ],
-    ),
-    body: _buildHomeNavigator(),
-    );
-  }
-
-  Scaffold _buildShoppingScreen() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("SHOPING"),
-      ),
-      body: Settings(),
-    );
-  }
-
   Navigator _buildCoreNavigator() {
     return Navigator(
       key: _coreNavigatorKey,
@@ -133,7 +85,7 @@ class CoreState extends State<Core> {
           }
 
           case "core/cart": {
-            builder = (context) => Settings();
+            builder = (context) => _buildShoppingScreen();
 
             break;
           }
@@ -148,49 +100,70 @@ class CoreState extends State<Core> {
     );
   }
 
-
+  /// HOME CLASS
   Scaffold _buildHomeNavigator() {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-      ),
-      body: Navigator(
-        key: _mainNavigatorKey,
-        initialRoute: "bottomNavigation/home",
-        onGenerateRoute: (RouteSettings settings){
-          WidgetBuilder builder;
+        appBar: AppBar(
+          title: Text("Home Screen"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: (){
+                this._coreNavigatorKey.currentState.pushNamed("core/cart");
+              },
+            )
+          ],
+        ),
+        body: Navigator(
+          key: _homeNavigatorKey,
+          initialRoute: "bottomNavigation/home",
+          onGenerateRoute: (RouteSettings settings){
+            WidgetBuilder builder;
 
-          print("HOME_NAV: ${settings.name}");
+            print("HOME_NAV: ${settings.name}");
 
-          switch(settings.name) {
-            case "bottomNavigation/home": {
-              builder = (context) => Home();
-              break;
+            switch(settings.name) {
+              case "bottomNavigation/home": {
+                builder = (context) => Home();
+                break;
+              }
+
+              case "bottomNavigation/profile": {
+                builder = (context) => Profile();
+                break;
+              }
+
+              case "appBar/shoppingScreen": {
+                builder = (context) => ShoppingScreen();
+                break;
+              }
+
+              case "drawerNavigation/settings": {
+                builder = (context) => Settings();
+                break;
+              }
+
+              default: {
+                throw Exception("Error in route: ${settings.name}");
+              }
             }
 
-            case "bottomNavigation/profile": {
-              builder = (context) => Profile();
-              break;
-            }
-
-            case "appBar/shoppingScreen": {
-              builder = (context) => ShoppingScreen();
-              break;
-            }
-
-            case "drawerNavigation/settings": {
-              builder = (context) => Settings();
-              break;
-            }
-
-            default: {
-              throw Exception("Error in route: ${settings.name}");
-            }
-          }
-
-          return MaterialPageRoute(builder: builder, settings: settings);
-        },
-      )
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        )
     );
   }
+
+  Scaffold _buildShoppingScreen() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("SHOPING"),
+      ),
+      body: Settings(),
+    );
+  }
+
+
+
+
 }
