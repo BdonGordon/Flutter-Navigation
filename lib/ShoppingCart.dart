@@ -16,20 +16,8 @@ class ShoppingState extends State<Shopping> {
     return IconButton(
       icon: Icon(Icons.shopping_cart),
       onPressed: (){
+        Navigator.of(context);
 //        widget.coreNavKey.currentState.pushNamed("appBar/shoppingScreen");
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: Text("Dialog"),
-              )
-            );
-          }
-        );
       },
     );
   }

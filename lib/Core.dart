@@ -13,9 +13,11 @@ class Core extends StatefulWidget {
 
 class CoreState extends State<Core> {
   int _tab = 0;
+  GlobalKey<NavigatorState> _mainNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<NavigatorState> _coreNavigatorKey = new GlobalKey<NavigatorState>();
   GlobalKey<ScaffoldState> _coreScaffold = new GlobalKey();
   GlobalKey<DrawerControllerState> _drawerKey = new GlobalKey<DrawerControllerState>();
+
 
   @override
   didUpdateWidget(Widget oldWidget) {
@@ -25,7 +27,7 @@ class CoreState extends State<Core> {
 
   _handleDrawerItemChange(String selectedItem) {
     if(selectedItem.compareTo("settings") == 0) {
-      this._coreNavigatorKey.currentState.pushNamed("Core/coreNavigation/drawerNavigation/settings");
+      this._mainNavigatorKey.currentState.pushNamed("Core/coreNavigation/drawerNavigation/settings");
       Navigator.of(context).pop();
     }
   }
@@ -36,10 +38,10 @@ class CoreState extends State<Core> {
     });
 
     if(index == 0) {
-      this._coreNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/home");
+      this._mainNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/home");
     }
     else if(index == 1) {
-      this._coreNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/profile");
+      this._mainNavigatorKey.currentState.pushReplacementNamed("bottomNavigation/profile");
     }
     else if(index == 2) {
       this._coreScaffold.currentState.openDrawer();
@@ -59,7 +61,13 @@ class CoreState extends State<Core> {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
-          Shopping(coreNavKey: this._coreNavigatorKey,)
+          IconButton(
+            icon: Icon(Icons.ac_unit),
+            onPressed: (){
+              this._coreNavigatorKey.currentState.pushNamed("core/cart");
+            },
+          )
+//          Shopping(coreNavKey: this._mainNavigatorKey,)
         ],
       ),
 
@@ -90,6 +98,36 @@ class CoreState extends State<Core> {
   Navigator _buildCoreNavigator() {
     return Navigator(
       key: _coreNavigatorKey,
+      initialRoute: "core/home",
+      onGenerateRoute: (RouteSettings settings){
+        WidgetBuilder builder;
+
+        switch(settings.name) {
+          case "core/home": {
+            builder = (context) => _buildMainNavigator();
+
+            break;
+          }
+
+          case "core/cart": {
+            builder = (context) => Settings();
+
+            break;
+          }
+
+          default:{
+            throw Exception("Invalid CORE route: ${settings.name}");
+          }
+        }
+
+        return MaterialPageRoute(builder: builder, settings: settings);
+      },
+    );
+  }
+
+  Navigator _buildMainNavigator() {
+    return Navigator(
+      key: _mainNavigatorKey,
       initialRoute: "bottomNavigation/home",
       onGenerateRoute: (RouteSettings settings){
         WidgetBuilder builder;
